@@ -1,0 +1,83 @@
+from app import app
+from flask import render_template, flash, redirect, url_for, request
+from app.forms import LoginForm
+from flask_login import current_user, login_user, logout_user
+from app.models import User
+from flask_login import login_required
+from flask import request
+from werkzeug.urls import url_parse
+from app import db
+from app.forms import RegistrationForm, LoginForm
+from app.models import Video
+
+
+@app.route("/")
+@app.route("/index")
+@login_required
+def index():
+    return 'Hello!'
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('record_vid'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('record_vid')
+        return redirect(next_page)
+    return render_template('login.html', title='Sign In', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+@app.route("/record/<int:video_id>", methods=['GET', 'POST'])
+def record_vid(video_id):
+    if request.method == 'POST':
+        return 'Upload Successful - You will be notified by email once your video has been processed.'
+
+        # check if the post request has the file part
+        if not request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(UPLOAD_FOLDER + filename)
+            subprocess.Popen([
+                "python", "face_test.py",
+                 "-vr", str(filename),
+                  "-vw", str(request.form["vid"]),
+                 "-e", str(request.form["email"]),
+                 "-u", str(request.form["user"])
+                 ])
+            return 'Upload Successful - You will be notified by email once your video has been processed.'
+    return render_template("reaction_rec.html", title="Home Page", video=Video.query.filter_by(id=video_id).first())
