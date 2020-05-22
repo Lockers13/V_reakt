@@ -1,16 +1,18 @@
 var ctx = document.getElementById('myChart').getContext('2d');
+ctx.canvas.width = 800;
+ctx.canvas.height = 600;
 var x_data = document.querySelector('#data_header1')
 var y_data = document.querySelector('#data_header2')
 var labels_array = []
 var y_coords = JSON.parse(y_data.dataset.y_coords)
-alert(y_data.dataset.y_coords)
+var x_coords = JSON.parse(x_data.dataset.x_coords)
+
 for(var i = 0; i < y_coords.length; i++) {
-    labels_array.push(1); 
+    labels_array.push(x_coords[i]); 
 }
 
-
 var myChart = new Chart(ctx, {
-    type: 'line',
+    type: 'bar',
     data: {
         labels : labels_array,
         datasets: [{
@@ -36,6 +38,8 @@ var myChart = new Chart(ctx, {
         }]
     },
     options: {
+        maintainAspectRatio : false,
+        responsive: false,
         scales: {
             yAxes: [{
                 ticks: {
