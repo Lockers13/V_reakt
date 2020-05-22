@@ -8,7 +8,7 @@ from flask import request
 from werkzeug.urls import url_parse
 from app import db
 from app.forms import RegistrationForm, LoginForm
-from app.models import Video, User
+from app.models import Video, User, Reaction
 import subprocess
 import os
 from werkzeug.utils import secure_filename
@@ -98,3 +98,10 @@ def record_vid():
             return redirect(url_for('index'))
             #return 'Upload Successful - You will be notified by email once your video has been processed.'
     return render_template("reaction_rec.html", title="Home Page", video=Video.query.filter_by(id=video_id).first())
+
+@app.route('/reactions')
+@login_required
+def react():
+    reaction = Reaction.query.filter_by(user_id=current_user.id).first()
+    reaction_list = json.loads(reaction.reaction_string)
+    return render_template('chart_view.html', x_coords=reaction_list[0], y_coords=reaction_list[1])

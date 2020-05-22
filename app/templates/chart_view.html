@@ -1,0 +1,13 @@
+{% block content %}
+<h1 id="data_header1" data-x_coords="{{ x_coords }}">Your Reactions</h1>
+<h1 id="data_header2" data-y_coords="{{ y_coords }}"></h1>
+
+<div>
+    <canvas id="myChart" width="400" height="400"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/reaction_chart.js') }}"></script>
+
+{% endblock %}

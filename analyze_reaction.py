@@ -158,11 +158,13 @@ os.remove(video2process)
 user = User.query.filter_by(username=args["user"]).first()
 video = Video.query.filter_by(path=args["video_watched"]).first()
 reaction = Reaction.query.filter_by(user_id=user.id, video_id=video.id).first()
+
 if reaction is None:
     db.session.add(Reaction(reaction_string=reaction_json, user_id=user.id, video_id=video.id))
     db.session.commit()
 else:
-    print("DUPLO!")
+    reaction.reaction_string = reaction_json
+    db.session.commit()
 
 
 # with open('smile_json/{}.json'.format(args["video_watched"]), 'w') as f:
