@@ -3,6 +3,10 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+import yagmail
+import os
+
+yagmail.register("flaskappthrowaway@gmail.com", os.getenv('EMAIL_PWD'))
 
 app = Flask(__name__, static_url_path='/static')
 app.config.from_object(Config)

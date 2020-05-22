@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Hi, {{ current_user.username }}! Your email is {{ current_user.email }}</h1>
-<!--{% for post in posts %}
-<div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div> 
-{% endfor %}-->
+<h1>Video Library</h1>
+{% for video in videos %}
+<div>
+    <a href="{{ url_for('record_vid') }}?vid={{ video.id }}">
+    <video id="vid" style="text-align:center;position: relative;left: 50%;transform: translateX(-50%);" width="500em" height="450em">
+        <source src="{{ url_for('static', filename='uploads/content_vids/') }}{{ video.path }}" type="video/mp4">
+             Your browser does not support the video tag.
+    </video>
+    </a>
+</div>
+{% endfor %}
 {% endblock %}

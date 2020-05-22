@@ -8,14 +8,23 @@ from flask import request
 from werkzeug.urls import url_parse
 from app import db
 from app.forms import RegistrationForm, LoginForm
-from app.models import Video
+from app.models import Video, User
+import subprocess
+import os
+from werkzeug.utils import secure_filename
+import json
+import time 
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
 
 @app.route("/")
 @app.route("/index")
 @login_required
 def index():
-    return 'Hello!'
+    videos = Video.query.all()
+    return render_template('index.html', videos=videos)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -31,7 +40,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('record_vid')
+            next_page = url_for('index')
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
@@ -54,11 +63,13 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-@app.route("/record/<int:video_id>", methods=['GET', 'POST'])
-def record_vid(video_id):
+@app.route("/record", methods=['GET', 'POST'])
+def record_vid():
+    if request.method == 'GET':
+        video_id = request.args.get('vid', type=int)
     if request.method == 'POST':
-        return 'Upload Successful - You will be notified by email once your video has been processed.'
-
+        uid = User.query.filter_by(username=request.form["user"]).first().id
+        vid_id = Video.query.filter_by(path=request.form["vid"]).first().id
         # check if the post request has the file part
         if not request.files:
             flash('No file part')
@@ -71,13 +82,19 @@ def record_vid(video_id):
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(UPLOAD_FOLDER + filename)
+            UPLOAD = "uploaded_recs/user_{0}/vid_{1}/".format(uid, vid_id)
+            try:
+                os.makedirs(os.path.join(app.config['UPLOAD_DIR'], UPLOAD))
+            except:
+                pass
+            file.save(os.path.join(app.config['UPLOAD_DIR'], UPLOAD, str(filename)))
             subprocess.Popen([
-                "python", "face_test.py",
-                 "-vr", str(filename),
+                "python", os.path.join(os.getcwd(), "analyze_reaction.py"),
+                 "-vr", os.path.join(UPLOAD, str(filename)),
                   "-vw", str(request.form["vid"]),
                  "-e", str(request.form["email"]),
                  "-u", str(request.form["user"])
                  ])
-            return 'Upload Successful - You will be notified by email once your video has been processed.'
+            return redirect(url_for('index'))
+            #return 'Upload Successful - You will be notified by email once your video has been processed.'
     return render_template("reaction_rec.html", title="Home Page", video=Video.query.filter_by(id=video_id).first())

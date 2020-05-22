@@ -43,7 +43,7 @@ class Video(db.Model):
     reaction_stats = db.Column(db.Text(16000000))
 
     def __repr__(self):
-        return '<Video: {}>'.format(self.url)
+        return '<Video: {}>'.format(self.path)
  
 
 

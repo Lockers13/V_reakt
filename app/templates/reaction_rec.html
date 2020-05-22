@@ -16,9 +16,9 @@
                         <div class="custom-file">
                             <input type=hidden name=user value="{{ current_user.username }}"><br><br> 
                             
-                            &nbsp&nbsp&nbsp&nbsp&nbspVideo Watched: <input type=text name=vid><br><br> 
+                            <input type=hidden name=vid value="{{ video.path }}"><br><br> 
                             
-                            &nbsp&nbsp&nbsp&nbsp&nbspYour Email Address: <input type=text name=email value="{{ current_user.email }}"><br><br> 
+                            <input type=hidden name=email value="{{ current_user.email }}"><br><br> 
                             
                             &nbsp&nbsp&nbsp&nbsp&nbspYour reaction:&nbsp&nbsp&nbsp&nbsp&nbsp<input
                             type=file name=file accept=".mp4,.mov"><br>
@@ -36,7 +36,7 @@
 <div id="viddiv" style="float:center;margin: auto;width: 50%;border: 1px solid rgb(25, 51, 79);padding: 10px;">
     <video id="vid" style="text-align:center;position: relative;left: 50%;transform: translateX(-50%);" width="500em" height="450em"
         controls>
-        <source src="{{ url_for('static', filename='content_vids/') }}{{ video.path }}" type="video/mp4"> Your browser does not support the video tag.
+        <source src="{{ url_for('static', filename='uploads/content_vids/') }}{{ video.path }}" type="video/mp4"> Your browser does not support the video tag.
     </video>
     <button style="margin:0 auto;display: block;" id="record">Start recording</button>
     <button style="margin:0 auto;display: block;" id="stop">Stop</button>
