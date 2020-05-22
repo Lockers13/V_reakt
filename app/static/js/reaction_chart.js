@@ -3,21 +3,33 @@ ctx.canvas.width = 800;
 ctx.canvas.height = 600;
 var x_data = document.querySelector('#data_header1')
 var y_data = document.querySelector('#data_header2')
-var labels_array = []
+var data_array = []
 var y_coords = JSON.parse(y_data.dataset.y_coords)
 var x_coords = JSON.parse(x_data.dataset.x_coords)
 
 for(var i = 0; i < y_coords.length; i++) {
-    labels_array.push(x_coords[i]); 
+    var point = {
+        x : x_coords[i],
+        y : y_coords[i]
+    };
+    data_array.push(point);
+
 }
 
 var myChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'scatter',
     data: {
-        labels : labels_array,
         datasets: [{
             label: '#',
-            data: y_coords,
+            borderColor: 'blue',
+            borderWidth: 1,
+            pointBackgroundColor: ['#000', '#00bcd6', '#d300d6'],
+            pointBorderColor: ['#000', '#00bcd6', '#d300d6'],
+            pointRadius: 1,
+            pointHoverRadius: 5,
+            fill: true,
+            showLine: true,
+            data: data_array,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
