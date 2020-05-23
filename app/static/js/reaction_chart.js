@@ -1,19 +1,18 @@
 var ctx = document.getElementById('myChart').getContext('2d');
-ctx.canvas.width = 800;
-ctx.canvas.height = 600;
-var x_data = document.querySelector('#data_header1')
-var y_data = document.querySelector('#data_header2')
-var data_array = []
-var y_coords = JSON.parse(y_data.dataset.y_coords)
-var x_coords = JSON.parse(x_data.dataset.x_coords)
+ctx.canvas.width = 700;
+ctx.canvas.height = 500;
 
-for(var i = 0; i < y_coords.length; i++) {
+var react_data = document.querySelector('#data_header1');
+
+var reaction_data = JSON.parse(react_data.dataset.reaction);
+console.log(reaction_data);
+var reaction_point_array = [];
+for(var i = 0; i < reaction_data.length; i++) {
     var point = {
-        x : x_coords[i],
-        y : y_coords[i]
-    };
-    data_array.push(point);
-
+        x : reaction_data[i][0],
+        y : reaction_data[i][1]
+    }
+    reaction_point_array.push(point);
 }
 
 var myChart = new Chart(ctx, {
@@ -29,7 +28,7 @@ var myChart = new Chart(ctx, {
             pointHoverRadius: 5,
             fill: true,
             showLine: true,
-            data: data_array,
+            data: reaction_point_array,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',

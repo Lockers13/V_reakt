@@ -6,7 +6,7 @@ from flask_login import LoginManager
 import yagmail
 import os
 
-yagmail.register("flaskappthrowaway@gmail.com", os.getenv('EMAIL_PWD'))
+yagmail.register("flaskthrowawayapp@gmail.com", os.getenv('EMAIL_PWD'))
 
 app = Flask(__name__, static_url_path='/static')
 app.config.from_object(Config)

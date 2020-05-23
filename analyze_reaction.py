@@ -8,24 +8,25 @@ import numpy as np
 import sys
 import json
 import os
-import yagmail
 import subprocess
 from app import app, db
 from app.models import User, Reaction, Video
+import smtplib, ssl
+from email.message import EmailMessage
 
 
-def send_error(yag):
-    print("Error processing video...exiting")
-    yag.send(to=args["email"],
-            subject="Virtual_Reakt Graph",
-            contents="Oops! There was an error processing your video. <a href='http://localhost:5000/record>Click here to try again</a>"
-            )
+# def send_error(yag):
+#     print("Error processing video...exiting")
+#     yag.send(to=args["email"],
+#             subject="Virtual_Reakt Graph",
+#             contents="Oops! There was an error processing your video. <a href='http://localhost:5000/record'>Click here to try again</a>"
+#             )
 
-def send_success(yag, user, recording):
-    yag.send(to=args["email"],
-            subject="Virtual_Reakt Graph",
-            contents="<a href='http://localhost:5000/graph_view/" + user + "/" + os.path.splitext(recording)[0] + "'>Click here to view your personal Reaktion graph!</a>"
-            )
+# def send_success(yag, user, video):
+#     yag.send(to=user.email,
+#             subject="Virtual Reaktion",
+#             contents="<a href='http://localhost:5000/reactions/" + str(video.id) + "'>Click here to view your personal Reaktion graph!</a>"
+#             )
 
 def checkdir_makeifnot(dir_file):
     try:
@@ -71,6 +72,7 @@ def process_video(cap, detector, predictor):
         return dblc_norm
 
     global yag
+    undetected = 0
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     fps_div = fps//2
     smile_degree = []
@@ -87,10 +89,12 @@ def process_video(cap, detector, predictor):
             frame = imutils.resize(frame, width=400)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             rects = detector(gray, 0)
+            undetected += 1
         except:
             #send_error(yag)
             print("Oops, error during processing!")
             sys.exit(1)
+        
             
         
     for rect in rects:
@@ -111,6 +115,7 @@ def process_video(cap, detector, predictor):
 
                 rects = detector(gray, 0)
                 if not rects:
+                    undetected += 1
                     smile_degree.append(dblc_norm)
                 else:
                     for rect in rects:
@@ -120,6 +125,10 @@ def process_video(cap, detector, predictor):
                         smile_degree.append(dblc_norm)
             else:
                 smile_degree.append(dblc_norm)
+            if undetected > 30:
+                #send_error(yag)
+                print("Oops, error during processing!")
+                sys.exit(1)
         except:
             #send_error(yag)
             print("Oops, error during processing!")
@@ -130,8 +139,7 @@ def process_video(cap, detector, predictor):
 
 
 args = parse_clargs()
-
-# yag = yagmail.SMTP("flaskappthrowaway@gmail.com") # initialise SMTP connection 
+print("PWD =", os.getenv('EMAIL_PWD'))
 
 shape_predictor = "shape_predictor_68_face_landmarks.dat" # path to dlib shape predictor
 
@@ -151,7 +159,7 @@ smile_degree, fps = process_video(cap, detector, predictor)
 
 time_coords, smile_degree = process_list(smile_degree, fps)
 
-reaction_json = json.dumps([time_coords, smile_degree])
+reaction_json = json.dumps(list(zip(time_coords, smile_degree)))
 
 os.remove(video2process)
 
@@ -166,10 +174,6 @@ else:
     reaction.reaction_string = reaction_json
     db.session.commit()
 
+# NOTIFY USER THAT REACTION GRAPH IS READY!!!
 
-# with open('smile_json/{}.json'.format(args["video_watched"]), 'w') as f:
-#     json.dump(list(smile_degree), f)
-#     print('JSON=WRITTEN')
-
-#send_success(yag, args["user"], args["video_rec"])
 print("DONE!")

@@ -99,9 +99,13 @@ def record_vid():
             #return 'Upload Successful - You will be notified by email once your video has been processed.'
     return render_template("reaction_rec.html", title="Home Page", video=Video.query.filter_by(id=video_id).first())
 
-@app.route('/reactions')
+@app.route('/reactions/<int:vid_id>')
 @login_required
-def react():
-    reaction = Reaction.query.filter_by(user_id=current_user.id).first()
-    reaction_list = json.loads(reaction.reaction_string)
-    return render_template('chart_view.html', x_coords=reaction_list[0], y_coords=reaction_list[1])
+def react(vid_id):
+    reaction = Reaction.query.filter_by(user_id=current_user.id, video_id=vid_id).first()
+    if reaction is not None:
+        reaction_list = json.loads(reaction.reaction_string)
+        video = Video.query.filter_by(id=vid_id).first()
+        return render_template('chart_view.html', reaction_data=reaction_list, video=video)
+    videos = Video.query.all()
+    return render_template('index', videos=videos)

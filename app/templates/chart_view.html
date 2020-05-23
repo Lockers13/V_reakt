@@ -1,10 +1,17 @@
 {% block content %}
-<h1 id="data_header1" data-x_coords="{{ x_coords }}">Your Reactions</h1>
-<h1 id="data_header2" data-y_coords="{{ y_coords }}"></h1>
+<h1 id="data_header1" style="text-align:center" data-reaction ="{{ reaction_data }}">Your Reaction</h1>
 
-<div height="400px" width="400px">
-    <canvas id="myChart" width="400" height="400"></canvas>
+<div height="400px" width="400px" style="width:100%;height:100vh;position:relative;">
+    <canvas id="myChart" width="400" height="400" style="position:absolute;top:0;bottom:0;right:0;left:0;margin:auto;"></canvas>
 </div>
+<div id="viddiv" style="float:center;margin: auto;width: 30%;padding: 10pxx;">
+    <video id="vid" style="text-align:center;position: relative;left: 50%;transform: translateX(-50%);" width="500em" height="450em"
+        controls>
+        <source src="{{ url_for('static', filename='uploads/content_vids/') }}{{ video.path }}" type="video/mp4"> Your browser does not support the video tag.
+    </video>
+</div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
