@@ -106,6 +106,6 @@ def react(vid_id):
     if reaction is not None:
         reaction_list = json.loads(reaction.reaction_string)
         video = Video.query.filter_by(id=vid_id).first()
-        return render_template('chart_view.html', reaction_data=reaction_list, video=video)
+        return render_template('chart_view.html', x_data=reaction_list[0], y_data=reaction_list[1], video=video)
     videos = Video.query.all()
     return render_template('index', videos=videos)

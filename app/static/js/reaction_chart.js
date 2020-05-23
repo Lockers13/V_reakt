@@ -2,15 +2,18 @@ var ctx = document.getElementById('myChart').getContext('2d');
 ctx.canvas.width = 700;
 ctx.canvas.height = 500;
 
-var react_data = document.querySelector('#data_header1');
+var x_data = document.querySelector('#data_header1');
+var y_data = document.querySelector('#data_header2');
 
-var reaction_data = JSON.parse(react_data.dataset.reaction);
-console.log(reaction_data);
+var x_coords = JSON.parse(x_data.dataset.x);
+var y_coords = JSON.parse(y_data.dataset.y);
+
+
 var reaction_point_array = [];
-for(var i = 0; i < reaction_data.length; i++) {
+for(var i = 0; i < x_coords.length; i++) {
     var point = {
-        x : reaction_data[i][0],
-        y : reaction_data[i][1]
+        x : x_coords[i],
+        y : y_coords[i]
     }
     reaction_point_array.push(point);
 }

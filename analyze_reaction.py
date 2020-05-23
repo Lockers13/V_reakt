@@ -139,7 +139,6 @@ def process_video(cap, detector, predictor):
 
 
 args = parse_clargs()
-print("PWD =", os.getenv('EMAIL_PWD'))
 
 shape_predictor = "shape_predictor_68_face_landmarks.dat" # path to dlib shape predictor
 
@@ -159,7 +158,7 @@ smile_degree, fps = process_video(cap, detector, predictor)
 
 time_coords, smile_degree = process_list(smile_degree, fps)
 
-reaction_json = json.dumps(list(zip(time_coords, smile_degree)))
+reaction_json = json.dumps([time_coords, smile_degree])
 
 os.remove(video2process)
 
