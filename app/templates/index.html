@@ -2,14 +2,32 @@
 
 {% block content %}
 <h1>Video Library</h1>
+<div class="scrolling-wrapper">
 {% for video in videos %}
-<div>
-    <a href="{{ url_for('record_vid') }}?vid={{ video.id }}">
+<div style="float:center;">
+<div class="container">
+    <h3><u><i>Video: {{ video.path }} - Uploaded By: {{ video.creator.username }}</i></u></h3>
     <video id="vid" style="text-align:center;position: relative;left: 50%;transform: translateX(-50%);" width="500em" height="450em">
         <source src="{{ url_for('static', filename='uploads/content_vids/') }}{{ video.path }}" type="video/mp4">
              Your browser does not support the video tag.
     </video>
-    </a>
+</div>
+    <div style="text-align:center">
+    <a href="{{ url_for('record_vid') }}?vid={{ video.id }}" class="link_button">Record a reaction</a>
+    {% for reaction in current_user.reactions %}
+    {% if reaction.video_id == video.id %}
+    <a href="{{ url_for('react', vid_id=video.id) }}" class="link_button">View Previous Reaction</a>
+    {% endif %}
+    {% endfor %}
+    </div>
+    
+<br><hr>
 </div>
 {% endfor %}
+</div>
 {% endblock %}
+
+
+
+
+  

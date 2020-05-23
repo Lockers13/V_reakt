@@ -1,14 +1,15 @@
-{% extends 'base.html' %} {% block content %}
-<div id="download_div" style="display:none;float:left;margin: auto;width: 50%;text-align:center">
+{% extends 'base.html' %} 
+{% block content %}
+<div id="download_div" style="display:none;">
     <br>
-    <a target="_blank" id="download"><span style="text-align:center">Your recording is ready! Give it a name below and click this link to download</span></a><br><br>
+    <a target="_blank" id="download"><span >Click this link to download your recording!</span></a><br><br>
     <br>
-    <input type=text id="downloadname" style="clear:both;" value="generic_download.mp4"><br><br>
-<div class="container" id='nested_fd' >
+    <input type=hidden id="downloadname" value="my_recording.mp4"><br><br>
+<div class="container" id='nested_fd' style="float:center;">
         <div class="row">
             <div class="col">
                 <h3>After you have downloaded your recording, reviewed it, and are satisfied that everything is OK, use the form below to upload your reaction to the Virtual Reakt servers :)</h3>
-                <hr><br>
+                <hr>
                 
                 <form method=post enctype=multipart/form-data>
                     <div class="form-group">
@@ -33,7 +34,7 @@
 </div>
 
 
-<div id="viddiv" style="float:center;margin: auto;width: 50%;border: 1px solid rgb(25, 51, 79);padding: 10px;">
+<div id="viddiv" style="float:left;width: 50%;padding: 10px;">
     <video id="vid" style="text-align:center;position: relative;left: 50%;transform: translateX(-50%);" width="500em" height="450em"
         controls>
         <source src="{{ url_for('static', filename='uploads/content_vids/') }}{{ video.path }}" type="video/mp4"> Your browser does not support the video tag.
@@ -43,4 +44,5 @@
 </div><br><br>
 
 
-<script src="{{ url_for('static', filename='js/reaction_rec.js') }}"></script> {% endblock %}
+<script src="{{ url_for('static', filename='js/reaction_rec.js') }}"></script> 
+{% endblock %}

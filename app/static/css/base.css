@@ -30,3 +30,29 @@
       color: green;
 
   }
+
+  .link_button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    text-decoration: none;
+    color: darkblue;
+    background-color:silver;
+    border:1px solid rgb(44, 52, 52);
+    padding:4px;
+    float:center;
+    margin:auto;
+  }
+
+  .container {
+    position: relative;
+    width: 100%;
+    overflow-x: scroll;
+    clear:both;
+  }
+
+  .scrolling-wrapper-flexbox {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }

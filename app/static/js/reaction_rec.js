@@ -55,14 +55,15 @@ recordButton.addEventListener('click', function () {
 
             downloadLink.href = URL.createObjectURL(new Blob(recordedChunks), {type: 'video/mp4'});
             downloadLink.download = download_name.value;
+            //downloadLink.click();
 
             
             var vid_div = document.getElementById('viddiv');
             
             down_div.style.display= 'block';
 
-            vid_div.style.float = 'left';
-            //form_div.style.display = 'block';
+            vid_div.style.float = 'center';
+            form_div.style.display = 'block';
 
         });
         video.play()

@@ -9,6 +9,7 @@
     </head>
     <body>
         <div class="topnav">
+            <a href="#" style="border-right:3px solid silver"><b>VIRTUAL REAKT</b></a>
             <a href="{{ url_for('index') }}">Home</a>
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">Login</a>
