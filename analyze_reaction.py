@@ -161,6 +161,7 @@ time_coords, smile_degree = process_list(smile_degree, fps)
 reaction_json = json.dumps([time_coords, smile_degree])
 
 os.remove(video2process)
+# os.remove(app.config['UPLOAD_DIR'] + args["video_rec"])
 
 user = User.query.filter_by(username=args["user"]).first()
 video = Video.query.filter_by(path=args["video_watched"]).first()
