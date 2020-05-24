@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+{% for video in videos %}
+<div style="float:center;">
+<div class="container">
+    <h3><u><i>Video: {{ video.path }} - Uploaded By: {{ video.creator.username }}</i></u></h3>
+    <video id="vid" style="text-align:center;position: relative;left: 50%;transform: translateX(-50%);" width="500em" height="450em">
+        <source src="{{ url_for('static', filename='uploads/content_vids/') }}{{ video.path }}" type="video/mp4">
+             Your browser does not support the video tag.
+    </video>
+</div>
+    <div style="text-align:center">
+    {% if video.reactions %}
+    <a href="{{ url_for('reaction_stats') }}?vid={{ video.id }}" class="link_button">CHECK OUT STATS</a>
+    {% else %}
+    <span>SORRY, NO REACTIONS RECORDED YET</span>
+    {% endif %}
+    </div>
+    
+<br><hr>
+</div>
+{% endfor %}
+
+{% endblock %}

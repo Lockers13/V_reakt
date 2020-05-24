@@ -169,10 +169,11 @@ reaction = Reaction.query.filter_by(user_id=user.id, video_id=video.id).first()
 
 if reaction is None:
     db.session.add(Reaction(reaction_string=reaction_json, user_id=user.id, video_id=video.id))
-    db.session.commit()
 else:
     reaction.reaction_string = reaction_json
-    db.session.commit()
+
+db.session.commit()
+
 
 # NOTIFY USER THAT REACTION GRAPH IS READY!!!
 

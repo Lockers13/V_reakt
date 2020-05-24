@@ -40,7 +40,7 @@ class Video(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     path = db.Column(db.String(120), index=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    reaction_stats = db.Column(db.Text(16000000))
+    reactions = db.relationship('Reaction', backref='react_to', lazy='dynamic')
 
     def __repr__(self):
         return '<Video: {}>'.format(self.path)

@@ -16,6 +16,9 @@
             {% else %}
             <a href="{{ url_for('logout') }}">Logout</a>
             {% endif %}
+            {% if current_user.videos %}
+            <a href="{{ url_for('reaction_stats') }}">Check out your feedback!</a>
+            {% endif %}
         </div>
         <hr>
         {% with messages = get_flashed_messages() %}

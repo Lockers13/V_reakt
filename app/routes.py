@@ -108,4 +108,31 @@ def react(vid_id):
         video = Video.query.filter_by(id=vid_id).first()
         return render_template('chart_view.html', x_data=reaction_list[0], y_data=reaction_list[1], video=video)
     videos = Video.query.all()
-    return render_template('index', videos=videos)
+    return render_template('index.html', videos=videos)
+
+
+@app.route('/reaction_stats')
+@login_required
+def reaction_stats():
+    if request.method == 'GET':
+        video_id = request.args.get('vid', type=int)
+        print("HELLO, video_id =", video_id)
+        if video_id is None:
+            print("HELLO")
+            videos = Video.query.filter_by(user_id=current_user.id).all()
+            return render_template('reaction_stats.html', videos=videos)
+        else:
+            video = Video.query.filter_by(id=video_id).first()
+            if video.reactions is not None:
+                return render_template('stats_view.html', video=video)
+            else:
+                return 'NO REACTIONS BITCH!'
+
+    return redirect(url_for('index'))
+
+
+
+
+
+
+
