@@ -11,9 +11,6 @@ import os
 import subprocess
 from app import app, db
 from app.models import User, Reaction, Video
-import smtplib, ssl
-from email.message import EmailMessage
-
 
 # def send_error(yag):
 #     print("Error processing video...exiting")
@@ -27,6 +24,19 @@ from email.message import EmailMessage
 #             subject="Virtual Reaktion",
 #             contents="<a href='http://localhost:5000/reactions/" + str(video.id) + "'>Click here to view your personal Reaktion graph!</a>"
 #             )
+
+def update_db(db, args, reaction_json):
+    user = User.query.filter_by(username=args["user"]).first()
+    video = Video.query.filter_by(path=args["video_watched"]).first()
+    reaction = Reaction.query.filter_by(user_id=user.id, video_id=video.id).first()
+    
+    if reaction is None:
+        db.session.add(Reaction(reaction_string=reaction_json, user_id=user.id, video_id=video.id))
+    else:
+        reaction.reaction_string = reaction_json
+    
+    db.session.commit()
+
 
 def checkdir_makeifnot(dir_file):
     try:
@@ -71,7 +81,7 @@ def process_video(cap, detector, predictor):
         dblc_norm = dblc/db_ears
         return dblc_norm
 
-    global yag
+    # global yag
     undetected = 0
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     fps_div = fps//2
@@ -125,7 +135,7 @@ def process_video(cap, detector, predictor):
                         smile_degree.append(dblc_norm)
             else:
                 smile_degree.append(dblc_norm)
-            if undetected > 30:
+            if undetected > 50:
                 #send_error(yag)
                 print("Oops, error during processing!")
                 sys.exit(1)
@@ -161,19 +171,13 @@ time_coords, smile_degree = process_list(smile_degree, fps)
 reaction_json = json.dumps([time_coords, smile_degree])
 
 os.remove(video2process)
-# os.remove(app.config['UPLOAD_DIR'] + args["video_rec"])
+os.remove(app.config['UPLOAD_DIR'] + args["video_rec"])
 
-user = User.query.filter_by(username=args["user"]).first()
-video = Video.query.filter_by(path=args["video_watched"]).first()
-reaction = Reaction.query.filter_by(user_id=user.id, video_id=video.id).first()
-
-if reaction is None:
-    db.session.add(Reaction(reaction_string=reaction_json, user_id=user.id, video_id=video.id))
-else:
-    reaction.reaction_string = reaction_json
-
-db.session.commit()
-
+try:
+    update_db(db, args, reaction_json)
+except Exception as e:
+    print("Error interacting with database")
+    print("Error message =", str(e))
 
 # NOTIFY USER THAT REACTION GRAPH IS READY!!!
 
