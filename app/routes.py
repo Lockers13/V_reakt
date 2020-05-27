@@ -13,7 +13,10 @@ import subprocess
 import os
 from werkzeug.utils import secure_filename
 import json
-import time 
+import time
+import secrets
+
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -106,7 +109,9 @@ def react(vid_id):
     if reaction is not None:
         reaction_list = json.loads(reaction.reaction_string)
         video = Video.query.filter_by(id=vid_id).first()
-        return render_template('chart_view.html', x_data=reaction_list[0], y_data=reaction_list[1], video=video)
+        token = secrets.token_urlsafe(16)
+        app.config['API_AUTH_DIR'][current_user.id] = token
+        return render_template('chart_view.html', video=video, ip=request.host_url, token=token)
     videos = Video.query.all()
     return render_template('index.html', videos=videos)
 

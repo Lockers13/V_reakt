@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 id="data_header1" style="text-align:center" data-x ="{{ x_data }}">Your Reaction</h1>
-<h1 id="data_header2" style="text-align:center" data-y ="{{ y_data }}"></h1>
+<h1 id="data_header1" style="text-align:center" data-ip="{{ ip }}">Your Reaction</h1>
+<span id="data_span1"  data-token="{{ token }}"></span>
 <div height="400px" width="400px" style="width:100%;height:100vh;position:relative;">
-    <canvas id="myChart" width="400" height="400" style="position:absolute;top:0;bottom:0;right:0;left:0;margin:auto;"></canvas>
+    <canvas id="myChart" width="400" data-user="{{ current_user.id }}" height="400" style="position:absolute;top:0;bottom:0;right:0;left:0;margin:auto;"></canvas>
 </div>
-<div id="viddiv" style="float:center;margin: auto;width: 30%;padding: 10pxx;">
-    <video id="vid" style="text-align:center;position: relative;left: 50%;transform: translateX(-50%);" width="500em" height="450em"
+<div id="viddiv" style="float:center;margin: auto;width: 30%;padding: 10px;">
+    <video id="vid" data-vid="{{ video.id }}" style="text-align:center;position: relative;left: 50%;transform: translateX(-50%);" width="500em" height="450em"
         controls>
         <source src="{{ url_for('static', filename='uploads/content_vids/') }}{{ video.path }}" type="video/mp4"> Your browser does not support the video tag.
     </video>

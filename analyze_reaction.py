@@ -168,7 +168,7 @@ smile_degree, fps = process_video(cap, detector, predictor)
 
 time_coords, smile_degree = process_list(smile_degree, fps)
 
-reaction_json = json.dumps([time_coords, smile_degree])
+reaction_json = json.dumps(list(zip(time_coords, smile_degree)))
 
 os.remove(video2process)
 os.remove(app.config['UPLOAD_DIR'] + args["video_rec"])
