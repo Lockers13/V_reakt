@@ -11,7 +11,7 @@ vid_id = vid_id.dataset.vid;
 auth_token = auth_token.dataset.token;
 var api_path = "api/statistics/personal_reaction/" + user_id + "/" + vid_id + "/" + auth_token;
 var fetch_url = base_ip + api_path;
-console.log(auth_token);
+
 fetch(fetch_url)
         .then(response => response.json())
         .then(function (data) {  

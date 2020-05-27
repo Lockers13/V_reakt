@@ -6,7 +6,6 @@ from flask import request
 from werkzeug.urls import url_parse
 from app import db
 from app.models import Video, User, Reaction
-import subprocess
 import os
 import json
 import time 
@@ -14,12 +13,28 @@ import time
 @app.route('/api/statistics/personal_reaction/<int:user_id>/<int:vid_id>/<auth_token>')
 def get_reaction(user_id, vid_id, auth_token):
     try:
-        authorize = app.config['API_AUTH_DIR'][user_id]
+        authorize = app.config['PERSONAL_API_TOKENS'][user_id]
         if authorize == auth_token:
-            del app.config['API_AUTH_DIR'][user_id]
+            del app.config['PERSONAL_API_TOKENS'][user_id]
             reaction = Reaction.query.filter_by(user_id=user_id, video_id=vid_id).first()
             return reaction.reaction_string
     except KeyError:
         print("PRIVATE API, SORRY!")
-        return ""
-    
+        
+    return ""
+
+@app.route('/api/statistics/global_reactions/<int:vid_id>/<int:user_id>/<auth_token>')
+def view_reactions(vid_id, user_id, auth_token):
+    try:
+        authorize = app.config['GLOBAL_API_TOKENS'][user_id] 
+        if authorize == auth_token:
+            del app.config['GLOBAL_API_TOKENS'][user_id]
+            reactions = Reaction.query.filter_by(video_id=vid_id).limit(5).all()
+            reaction_data = []
+            for reaction in reactions:
+                reaction_data.append(reaction.reaction_string)
+            return json.dumps(reaction_data)
+    except KeyError:
+        print("PRIVATE API, SORRY!")
+
+    return ""

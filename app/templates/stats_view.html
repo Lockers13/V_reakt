@@ -3,6 +3,10 @@
 {% block content %}
 
 <h1>Global Statistics for Video : {{ video.path }}</h1>
+<span id="data_span1"  data-token="{{ token }}"></span>
+<span id="data_span2"  data-ip="{{ host_ip }}"></span>
+<span id="data_span3"  data-video_id="{{ video.id }}"></span>
+<span id="data_span4"  data-uid="{{ user.id }}"></span>
 
 <div id="viddiv" style="float:center;margin: auto;width: 30%;padding: 10pxx;">
         <video id="vid" style="text-align:center;position: relative;left: 50%;transform: translateX(-50%);" width="300em" height="250em"
@@ -19,7 +23,8 @@
 </div>
 
 {% endfor %}
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="{{ url_for('static', filename='js/stats_view.js') }}"></script>
+<script src="{{ url_for('static', filename='js/stats_view.js') }}?{{ timestamp }}"></script>
 {% endblock %}

@@ -105,13 +105,13 @@ def record_vid():
 @app.route('/reactions/<int:vid_id>')
 @login_required
 def react(vid_id):
+    timestamp = int(time.time())
     reaction = Reaction.query.filter_by(user_id=current_user.id, video_id=vid_id).first()
     if reaction is not None:
-        reaction_list = json.loads(reaction.reaction_string)
         video = Video.query.filter_by(id=vid_id).first()
         token = secrets.token_urlsafe(16)
-        app.config['API_AUTH_DIR'][current_user.id] = token
-        return render_template('chart_view.html', video=video, ip=request.host_url, token=token)
+        app.config['PERSONAL_API_TOKENS'][current_user.id] = token
+        return render_template('chart_view.html', video=video, ip=request.host_url, token=token, timestamp=timestamp)
     videos = Video.query.all()
     return render_template('index.html', videos=videos)
 
@@ -119,17 +119,19 @@ def react(vid_id):
 @app.route('/reaction_stats')
 @login_required
 def reaction_stats():
+    timestamp = int(time.time())
     if request.method == 'GET':
         video_id = request.args.get('vid', type=int)
-        print("HELLO, video_id =", video_id)
         if video_id is None:
-            print("HELLO")
             videos = Video.query.filter_by(user_id=current_user.id).all()
             return render_template('reaction_stats.html', videos=videos)
         else:
             video = Video.query.filter_by(id=video_id).first()
+            token = secrets.token_urlsafe(16)
+            app.config['GLOBAL_API_TOKENS'][current_user.id] = token
             if video.reactions is not None:
-                return render_template('stats_view.html', video=video)
+                return render_template('stats_view.html', video=video, ip=request.host_url,
+                 timestamp=timestamp, token=token, user=current_user)
             else:
                 return 'NO REACTIONS BITCH!'
 
