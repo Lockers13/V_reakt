@@ -8,7 +8,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png',
             'jpg', 'jpeg', 'gif', 'mp4', 'mov'}
-    MAX_CONTENT_LENGTH = 16 * (2**20)
+    MAX_CONTENT_LENGTH = 16 * (2**30)
     UPLOAD_DIR = 'app/static/uploads/'
     PERSONAL_API_TOKENS = {}
     GLOBAL_API_TOKENS = {}
