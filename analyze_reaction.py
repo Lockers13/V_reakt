@@ -9,21 +9,21 @@ import sys
 import json
 import os
 import subprocess
-from app import app, db
+from app import app, db, email
 from app.models import User, Reaction, Video
 
-# def send_error(yag):
-#     print("Error processing video...exiting")
-#     yag.send(to=args["email"],
-#             subject="Virtual_Reakt Graph",
-#             contents="Oops! There was an error processing your video. <a href='http://localhost:5000/record'>Click here to try again</a>"
-#             )
-
-# def send_success(yag, user, video):
-#     yag.send(to=user.email,
-#             subject="Virtual Reaktion",
-#             contents="<a href='http://localhost:5000/reactions/" + str(video.id) + "'>Click here to view your personal Reaktion graph!</a>"
-#             )
+def send_email_resp(args, success=True):
+    video = Video.query.filter_by(path=args["video_watched"]).first()
+    if success:
+        text = None
+        html = "Your reaktion was processed successfully...!<br><br><a href='http://localhost:5000/reactions/" + \
+            str(video.id) + "'>Click here to view your personal Reaktion graph!</a>"
+    else:
+        text = "There was an unexpected error processing your video, please try again."
+        html=None
+    email.send_email("Virtual Reaktion!", app.config['MAIL_USERNAME'],
+               [args["email"]], text, html)
+               
 
 def update_db(db, args, reaction_json):
     user = User.query.filter_by(username=args["user"]).first()
@@ -81,7 +81,6 @@ def process_video(cap, detector, predictor):
         dblc_norm = dblc/db_ears
         return dblc_norm
 
-    # global yag
     undetected = 0
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     fps_div = fps//2
@@ -93,15 +92,15 @@ def process_video(cap, detector, predictor):
     rects = detector(gray, 0)
 
     while not rects:
-        try:
-            ret, frame = cap.read()
-            frame_count += 1
-            frame = imutils.resize(frame, width=400)
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            rects = detector(gray, 0)
-            undetected += 1
-        except:
-            #send_error(yag)
+        ret, frame = cap.read()
+        frame_count += 1
+        frame = imutils.resize(frame, width=400)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        rects = detector(gray, 0)
+        undetected += 1
+        if undetected > 50:
+            with app.app_context():
+                send_email_resp(args, success=False)
             print("Oops, error during processing!")
             sys.exit(1)
         
@@ -136,11 +135,13 @@ def process_video(cap, detector, predictor):
             else:
                 smile_degree.append(dblc_norm)
             if undetected > 50:
-                #send_error(yag)
+                with app.appcontext():
+                    send_email_resp(args, success=False)
                 print("Oops, error during processing!")
                 sys.exit(1)
         except:
-            #send_error(yag)
+            with app.appcontext():
+                send_email_resp(args, success=False)
             print("Oops, error during processing!")
             sys.exit(1)
 
@@ -179,6 +180,7 @@ except Exception as e:
     print("Error interacting with database")
     print("Error message =", str(e))
 
-# NOTIFY USER THAT REACTION GRAPH IS READY!!!
+with app.app_context():
+    send_email_resp(args)
 
 print("DONE!")
