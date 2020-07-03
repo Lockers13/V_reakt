@@ -38,7 +38,7 @@ class Reaction(db.Model):
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    path = db.Column(db.String(120), index=True, unique=True)
+    path = db.Column(db.String(400), index=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     reactions = db.relationship('Reaction', backref='react_to', lazy='dynamic')
 

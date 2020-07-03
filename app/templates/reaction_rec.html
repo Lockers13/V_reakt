@@ -39,10 +39,26 @@
         controls>
         <source src="{{ url_for('static', filename='uploads/content_vids/') }}{{ video.path }}" type="video/mp4"> Your browser does not support the video tag.
     </video>
-    <button style="margin:0 auto;display: block;" id="record">Start recording</button>
-    <button style="margin:0 auto;display: block;" id="stop">Stop</button>
-</div><br><br>
+    
+<div id="emojis" style="padding: 50 100 50 100;">
+    
+</div>
 
+</div><br><br>
+<div>
+<select name="genre" id="genre">
+    <optgroup label="Entertainment">
+      <option value="comedy">Comedy</option>
+      <option value="drama">Drama</option>
+      <option value="horror">Horror</option>
+    </optgroup>
+    <optgroup label="Presentation">
+      <option value="business">Business</option>
+      <option value="academic">Academic</option>
+    </optgroup>
+  </select>
+</div>
+<button id="g-btn">pg</button>
 
 <script src="{{ url_for('static', filename='js/reaction_rec.js') }}"></script> 
 {% endblock %}
