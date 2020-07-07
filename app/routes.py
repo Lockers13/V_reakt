@@ -140,6 +140,9 @@ def reaction_stats():
 
 
 
-
-
-
+@app.route('/emoji_react')
+@login_required
+def emoji_react():
+    if request.method == 'GET':
+        video_id = request.args.get('vid', type=int)
+    return render_template("emoji_react.html", title="Emoji React", video=Video.query.filter_by(id=video_id).first())

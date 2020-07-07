@@ -147,40 +147,41 @@ def process_video(cap, detector, predictor):
 
     cap.release()
     return smile_degree, fps
-
-
-args = parse_clargs()
-
-shape_predictor = "shape_predictor_68_face_landmarks.dat" # path to dlib shape predictor
-
-detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(shape_predictor)
-
-
-video2process = app.config["UPLOAD_DIR"] + "temp_" + os.path.basename(args["video_rec"]) # make a temp output file for ffmpeg processing
-
-# The following subprocess call involves necessary ffmpeg processing to allow cv2 to read video file.
-# For some reason, cv2.videocapture does not work with mp4 downloaded with codecs h264 from google chrome
-subprocess.run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "warning", "-i", app.config['UPLOAD_DIR'] + args["video_rec"], "-c", "copy", video2process], cwd=os.getcwd()) 
-
-cap = cv2.VideoCapture(video2process)
-
-smile_degree, fps = process_video(cap, detector, predictor)
-
-time_coords, smile_degree = process_list(smile_degree, fps)
-
-reaction_json = json.dumps(list(zip(time_coords, smile_degree)))
-
-os.remove(video2process)
-os.remove(app.config['UPLOAD_DIR'] + args["video_rec"])
-
-try:
-    update_db(db, args, reaction_json)
-except Exception as e:
-    print("Error interacting with database")
-    print("Error message =", str(e))
-
+    
 with app.app_context():
-    send_email_resp(args)
 
-print("DONE!")
+    args = parse_clargs()
+
+    shape_predictor = "shape_predictor_68_face_landmarks.dat" # path to dlib shape predictor
+
+    detector = dlib.get_frontal_face_detector()
+    predictor = dlib.shape_predictor(shape_predictor)
+
+
+    video2process = app.config["UPLOAD_DIR"] + "temp_" + os.path.basename(args["video_rec"]) # make a temp output file for ffmpeg processing
+
+    # The following subprocess call involves necessary ffmpeg processing to allow cv2 to read video file.
+    # For some reason, cv2.videocapture does not work with mp4 downloaded with codecs h264 from google chrome
+    subprocess.run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "warning", "-i", app.config['UPLOAD_DIR'] + args["video_rec"], "-c", "copy", video2process], cwd=os.getcwd()) 
+
+    cap = cv2.VideoCapture(video2process)
+
+    smile_degree, fps = process_video(cap, detector, predictor)
+
+    time_coords, smile_degree = process_list(smile_degree, fps)
+
+    reaction_json = json.dumps(list(zip(time_coords, smile_degree)))
+
+    os.remove(video2process)
+    os.remove(app.config['UPLOAD_DIR'] + args["video_rec"])
+
+    try:
+        update_db(db, args, reaction_json)
+    except Exception as e:
+        print("Error interacting with database")
+        print("Error message =", str(e))
+
+    with app.app_context():
+        send_email_resp(args)
+
+    print("DONE!")

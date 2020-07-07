@@ -56,3 +56,24 @@
     flex-wrap: nowrap;
     overflow-x: auto;
   }
+
+  .emoji_btn {
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    float:left;
+    font-size: 80px;
+
+
+  }
+
+  .sel_bar {
+    float:left;
+    margin:5px;
+  }
+
+  .chart_header {
+    display:block;
+    clear: both;
+  }
