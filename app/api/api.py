@@ -39,3 +39,13 @@ def view_reactions(vid_id, user_id, auth_token):
 
     return ""
 
+@app.route("/api/emoji_graph", methods=["GET", "POST"])
+def graph_upload():
+    if request.method == 'POST':
+        data = request.get_json()
+        if data is not None:
+            return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    elif request.method == 'GET':
+        return "hey"
+
+

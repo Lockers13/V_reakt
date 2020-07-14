@@ -105,10 +105,9 @@ function log_emoji_press(emotion, press_length) {
 
 function load_emojis() {
     function myFunction(item, index) {
-
         const key_list = Object.keys(item)
         reaction_select.innerHTML += "<option>" + key_list[0] + "</option>"
-        emoji_div.innerHTML += "<button class='emoji_btn' id='" +
+        emoji_div.innerHTML += "<button class='emoji_btn' style='padding: 10px 25px;text-align: center;text-decoration: none;display: inline-block;font-size: 80px' id='" +
             key_list[0] + "'>" + item[key_list[0]] + "</button>";
     }
     
@@ -151,3 +150,20 @@ genre.addEventListener("change", load_emojis);
 var graph_button = document.getElementById("g-btn");
 graph_button.addEventListener("click", show_graph.bind(event, graph))
 
+$("#post_graph").on("click", function() {
+    console.log(graph)
+    $.ajax({
+        type: "POST",
+        url: "/api/graph_upload/emoji",
+    // The key needs to match your method's input parameter (case-sensitive).
+        data: JSON.stringify(graph),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+            alert(data);
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
+  });
