@@ -28,6 +28,7 @@ class User(UserMixin, db.Model):
 class Reaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reaction_string = db.Column(db.Text(16000000))
+    emoji_reaction = db.Column(db.Text(16000000))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     video_id = db.Column(db.Integer, db.ForeignKey('video.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)

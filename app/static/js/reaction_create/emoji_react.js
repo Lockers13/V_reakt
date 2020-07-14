@@ -154,9 +154,12 @@ $("#post_graph").on("click", function() {
     console.log(graph)
     $.ajax({
         type: "POST",
-        url: "/api/graph_upload/emoji",
+        url: "/api/emoji_graph",
     // The key needs to match your method's input parameter (case-sensitive).
-        data: JSON.stringify(graph),
+        data: JSON.stringify({'graph': graph,
+            'user': user_id, // variable coming from emoji_react.html template 
+            'video': vid_id}), // variable coming from emoji_react.html template 
+
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data){

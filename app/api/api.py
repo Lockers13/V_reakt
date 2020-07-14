@@ -10,6 +10,19 @@ import os
 import json
 import time 
 
+# def update_db(db, args, reaction_json):
+#     user = User.query.filter_by(username=args["user"]).first()
+#     video = Video.query.filter_by(id=).first()
+#     reaction = Reaction.query.filter_by(user_id=user.id, video_id=video.id).first()
+    
+#     if reaction is None:
+#         db.session.add(Reaction(reaction_string=reaction_json, user_id=user.id, video_id=video.id))
+#     else:
+#         reaction.reaction_string = reaction_json
+    
+#     db.session.commit()
+
+
 @app.route('/api/statistics/personal_reaction/<int:user_id>/<int:vid_id>/<auth_token>')
 def get_reaction(user_id, vid_id, auth_token):
     try:
@@ -39,13 +52,30 @@ def view_reactions(vid_id, user_id, auth_token):
 
     return ""
 
-@app.route("/api/emoji_graph", methods=["GET", "POST"])
+@app.route('/api/emoji_graph', methods=["GET", "POST"])
 def graph_upload():
     if request.method == 'POST':
         data = request.get_json()
-        if data is not None:
-            return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+        user_id = data['user']
+        video_id = data['video']
+        emoji_graph = json.dumps(data['graph'])
+
+        reaction = Reaction.query.filter_by(user_id=user_id, video_id=video_id).first()
+        try:
+            if reaction is None:
+                db.session.add(Reaction(emoji_reaction=emoji_graph,
+                user_id=user_id,
+                video_id=video_id))
+            else:
+                reaction.emoji_reaction = emoji_graph
+            db.session.commit()
+
+            return json.dumps({'success': True}), 200, {'ContentType':'application/json'} 
+        except Exception as e:
+            print(str(e))
+            return json.dumps({'success': False}), 500 
+
     elif request.method == 'GET':
-        return "hey"
+        return json.dumps({'success': False}), 404
 
 

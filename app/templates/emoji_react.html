@@ -4,11 +4,10 @@
 
 
 <div  class="jumbotron" id="viddiv">
-    <div class="container-fluid" style="text-align:center;">
-                <h1>Virtual Emotion</h1>
+    <div class="container-fluid"  style="text-align:center;">
+                <h1>Virtual Emotion 4 {{ user.username }}</h1>
                 <p>Let your emotions shine through by pressing the emojis below while the video is playing!</p>
-                <div>
-                        <select class="sel_bar" name="genre" id="genre">
+                        <select  style="text-align:center;width:10%" name="genre" id="genre">
                             <optgroup label="Entertainment">
                               <option value="comedy">Comedy</option>
                               <option value="drama">Drama</option>
@@ -19,7 +18,6 @@
                               <option value="academic">Academic</option>
                             </optgroup>
                           </select>
-                        </div>
                 <p><div id="emojis" style="padding: 50 100 50 100;text-align:center;">   
                     </div></p>
     </div>
@@ -29,10 +27,10 @@
     </video>
 
 </div>
-<div>
+<div class="form-group">
         <button class="btn-primary" id="g-btn">Preview Graph</button><br>
         &nbsp&nbspPlease Choose emotion to view: 
-        <select class="sel_bar" name="react_select" id="react_select">
+        <select  name="react_select" id="react_select">
     
           </select>
     </div>
@@ -54,5 +52,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>let user_id = "{{ user.id }}"; let vid_id = "{{ video.id }}"</script>
 <script src="{{ url_for('static', filename='js/reaction_create/emoji_react.js') }}"></script> 
 {% endblock %}
