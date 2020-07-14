@@ -1,11 +1,9 @@
 {% extends 'base.html' %} 
 {% block content %}
 
-
-
 <div  class="jumbotron" id="viddiv">
     <div class="container-fluid"  style="text-align:center;">
-                <h1>Virtual Emotion 4 {{ user.username }}</h1>
+                <h1>Virtual Emotion</h1>
                 <p>Let your emotions shine through by pressing the emojis below while the video is playing!</p>
                         <select  style="text-align:center;width:10%" name="genre" id="genre">
                             <optgroup label="Entertainment">
@@ -28,24 +26,21 @@
 
 </div>
 <div class="form-group">
-        <button class="btn-primary" id="g-btn">Preview Graph</button><br>
-        &nbsp&nbspPlease Choose emotion to view: 
-        <select  name="react_select" id="react_select">
+        
+        &nbsp&nbspView the graph of your reaction: <br><br>
+        <select class="form-control" name="react_select" id="react_select" style="width:20%;display:inline;float:left;">
     
-          </select>
-    </div>
+        </select>
+        <div>
+                <button class="btn-primary" id="post_graph" style="display:inline;float:right;margin-right:10px;">Upload Reaction</button>
+        </div>
+    </div><br><br>
     <div id="select_error"></div>
-
-
-
 
 
 <h1 style="text-align:center;padding-top:50px;" class="chart_header" id="c_head"></h1>
 <div height="400px" width="400px" style="width:100%;height:100vh;display:block;">
     <canvas id="myChart" width="400" height="400" style="top:0;bottom:0;right:0;left:0;margin:auto;"></canvas>
-    <div>
-            <button class="btn-primary" id="post_graph">Upload Graph</button>
-    </div>
 </div>
 
 

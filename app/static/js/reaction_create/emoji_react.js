@@ -78,13 +78,13 @@ function graph_vis(emoji_data) {
         });
 }
 
-function show_graph(graph) {
-    const reaction_select = document.getElementById('react_select')
-    var emoji_string = reaction_select.value.toString()
+function show_graph(graph, graph_view) {
+
+    var emoji_string = graph_view.value.toString()
     console.log(emoji_string)
     console.log(emoji_string === "smile")
     if(graph[emoji_string] === undefined)
-        document.getElementById('select_error').innerHTML = "You have not recorded any responses for this emotion! Try Again"
+        document.getElementById('select_error').innerHTML = "<span styyle='text:red'>You have not recorded any responses for this emotion! Try Again</span>"
     else {
         document.getElementById('select_error').innerHTML = ""
         graph_vis(graph[emoji_string])
@@ -147,15 +147,18 @@ function load_emojis() {
 load_emojis()
 
 genre.addEventListener("change", load_emojis);
-var graph_button = document.getElementById("g-btn");
-graph_button.addEventListener("click", show_graph.bind(event, graph))
+
+const graph_view = document.getElementById("react_select");
+graph_view.addEventListener("change", show_graph.bind(event, graph, graph_view))
+
+
+// post of graph info 
 
 $("#post_graph").on("click", function() {
     console.log(graph)
     $.ajax({
         type: "POST",
         url: "/api/emoji_graph",
-    // The key needs to match your method's input parameter (case-sensitive).
         data: JSON.stringify({'graph': graph,
             'user': user_id, // variable coming from emoji_react.html template 
             'video': vid_id}), // variable coming from emoji_react.html template 
